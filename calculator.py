@@ -8,8 +8,6 @@ SCREENHEIGHT = 500
 DISPLAY_FRAME_HEIGHT = 170
 BUTTONS_FRAME_HEIGHT = 330
 LABEL_COLOR = "#000000"
-BUTTON_WIDTH = 80
-BUTTON_HEIGHT = 49
 LIGHT_BLUE = "#99ccff"
 
 
@@ -30,8 +28,8 @@ class Calculator:
         self.window.geometry(str(SCREENWIDTH) + 'x' + str(SCREENHEIGHT))
         self.window.resizable(0, 0)
         self.window.title("Calculator")
-        self.total_expression = "0"
-        self.current_expression = "0"
+        self.total_expression = ''
+        self.current_expression = ''
         self.FONT_SYMBOL = font.Font(size=17)
         self.digits = {
             7:(2, 0),
@@ -79,7 +77,7 @@ class Calculator:
     
     def create_digits_button(self):
         for digit, grid_value in self.digits.items():
-            button = tk.Button(self.buttons_frame, text=str(digit), bg=WHITE, fg=LABEL_COLOR, borderwidth=0, font=FONT)
+            button = tk.Button(self.buttons_frame, text=str(digit), bg=WHITE, fg=LABEL_COLOR, borderwidth=0, font=FONT, command=lambda x=digit: self.add_digit_to_expression(x))
             button.grid(row= grid_value[0], column= grid_value[1], sticky=tk.NSEW)
             button['font'] = self.FONT_SYMBOL
     
@@ -96,7 +94,7 @@ class Calculator:
     def create_operation_buttons(self):
         i = 1
         for operator, symbol in self.operation.items():
-            button = tk.Button(self.buttons_frame, text=symbol, bg=OFF_WHITE, fg=LABEL_COLOR, borderwidth=0)
+            button = tk.Button(self.buttons_frame, text=symbol, bg=OFF_WHITE, fg=LABEL_COLOR, borderwidth=0, command= lambda symbol_label = operator : self.add_operator_to_expression(symbol_label))
             button.grid(row=i, column=3, sticky=tk.NSEW)
             button['font'] = self.FONT_SYMBOL
             i += 1
@@ -107,20 +105,20 @@ class Calculator:
         button['font'] = self.FONT_SYMBOL
     
     def create_equal_button(self):
-        button = tk.Button(self.buttons_frame, text= "=", bg=LIGHT_BLUE, fg=LABEL_COLOR, borderwidth=0)
+        button = tk.Button(self.buttons_frame, text= "=", bg=LIGHT_BLUE, fg=LABEL_COLOR, borderwidth=0, command=self.equal_button_click)
         button.grid(row=5, column=3, sticky=tk.NSEW)
         button['font'] = self.FONT_SYMBOL
     
     def create_clear_buttons(self):
-        button_clear_all = tk.Button(self.buttons_frame, text="C", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0)
+        button_clear_all = tk.Button(self.buttons_frame, text="C", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0, command=self.clear_all_display)
         button_clear_all.grid(row=0, column=2, sticky=tk.NSEW)
         button_clear_all['font'] = self.FONT_SYMBOL
         
-        button_clear_element = tk.Button(self.buttons_frame, text="CE", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0)
+        button_clear_element = tk.Button(self.buttons_frame, text="CE", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0, command= self.clear_current_label)
         button_clear_element.grid(row=0, column=1, sticky=tk.NSEW)
         button_clear_element['font'] = self.FONT_SYMBOL
         
-        button_backspace = tk.Button(self.buttons_frame, text="⌫", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0)
+        button_backspace = tk.Button(self.buttons_frame, text="⌫", bg= OFF_WHITE, fg= LABEL_COLOR, borderwidth=0, command=lambda: self.back_space())
         button_backspace.grid(row=0, column=3, sticky=tk.NSEW)
         button_backspace['font'] = self.FONT_SYMBOL
         
@@ -149,11 +147,37 @@ class Calculator:
         self.create_clear_buttons()
         self.create_some_special_operation_buttons()
         
-
+    def update_label(self):
+        self.label.config(text=self.current_expression)
         
+    def update_total_label(self):
+        self.total_label.config(text=self.total_expression)
+        
+    def add_digit_to_expression(self, value):
+        self.current_expression += str(value)
+        self.update_label()
     
+    def back_space(self):
+        self.current_expression = self.current_expression[:-1]
+        self.update_label()
         
+    def clear_all_display(self):
+        self.total_expression = ''
+        self.current_expression = ''
+        self.update_label()
+        self.update_total_label()
+    def clear_current_label(self):
+        self.current_expression = ''
+        self.update_label()
         
+    def equal_button_click(self):
+        self.total_expression = self.current_expression + "="
+        self.update_label()
+        self.update_total_label()
+        
+    def add_operator_to_expression(self, operation):
+        self.current_expression += str(operation)
+        self.update_label()
     def run(self):
         self.window.mainloop()
         
