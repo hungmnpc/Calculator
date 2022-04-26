@@ -171,13 +171,17 @@ class Calculator:
         self.update_label()
         
     def equal_button_click(self):
-        self.total_expression = self.current_expression + "="
+        self.total_expression  +=  self.current_expression
+        self.current_expression = str(eval(self.total_expression))
         self.update_label()
         self.update_total_label()
         
     def add_operator_to_expression(self, operation):
         self.current_expression += str(operation)
+        self.total_expression = self.current_expression
+        self.current_expression = ''
         self.update_label()
+        self.update_total_label()
     def run(self):
         self.window.mainloop()
         
