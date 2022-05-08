@@ -27,8 +27,8 @@ class Calculator:
         self.window.resizable(0, 0)
         self.window.title("Calculator")
         self.total_expression = ''
-        self.current_expression = ''
-        self.cal_expression = ''
+        self.current_expression = []
+        self.cal_expression = []
         self.FONT_SYMBOL = font.Font(size=17)
         self.digits = {
             7: (2, 0),
@@ -78,11 +78,11 @@ class Calculator:
             button['font'] = self.FONT_SYMBOL
 
     def create_display_labels(self):
-        current_label = tk.Label(self.display_frame, text=self.total_expression,
+        current_label = tk.Label(self.display_frame, text=''.join(self.total_expression),
                                font=SMALL_FONT_STYLE, fg=LABEL_COLOR, anchor=tk.E, padx=24)
         current_label.pack(expand=1, fill="both")
 
-        total_label = tk.Label(self.display_frame, text=self.current_expression,
+        total_label = tk.Label(self.display_frame, text=''.join(self.current_expression),
                          font=LARGE_FONT_STYLE, fg=LABEL_COLOR, anchor=tk.E, padx=24, bg="red")
         total_label.pack(expand=1, fill="both")
 
@@ -155,50 +155,53 @@ class Calculator:
         self.create_some_special_operation_buttons()
 
     def update_total_label(self):
-        self.total_label.config(text=self.total_expression)
+        self.total_label.config(text=''.join(self.total_expression))
 
     def update_current_label(self):
-        self.current_label.config(text=self.current_expression)
+        self.current_label.config(text=''.join(self.current_expression))
 
     def add_value_label(self, value):
-        self.current_expression += str(value)
-        self.cal_expression += ' ' + str(value) + ' '
+        self.current_expression.append(str(value))
+        self.cal_expression.append(str(value))
         self.update_current_label()
 
     def back_space(self):
-        self.current_expression = self.current_expression[:-1]
-        self.cal_expression = self.cal_expression[:-1]
+        try:
+            self.current_expression.pop()
+            self.cal_expression.pop()
+        except:
+            pass
         self.update_current_label()
 
     def clear_all_display(self):
         self.total_expression = ''
-        self.current_expression = ''
-        self.cal_expression = ''
+        self.current_expression.clear()
+        self.cal_expression.clear()
         self.update_total_label()
         self.update_current_label()
 
     def equal_button_click(self):
-        self.total_expression = str(eval(self.cal_expression))
+        self.total_expression = str(eval(''.join(self.cal_expression)))
         self.update_total_label()
 
     def negate(self):
-        a = str(Decimal(self.current_expression) * -1)
-        self.current_expression = a.rstrip('0').rstrip('.') if '.' in a else a
-        self.update_current_label()
+        a = str(Decimal(''.join(self.current_expression)) * -1)
+        self.total_expression = a.rstrip('0').rstrip('.') if '.' in a else a ##???
+        self.update_total_label()
 
     def click_sqr(self):
-        self.current_expression = self.current_expression + '^2'
-        self.cal_expression = self.cal_expression + ' ** 2 '
+        self.current_expression.append("^")
+        self.cal_expression.append("**")
         self.update_current_label()
 
     def click_sqrt(self):
-        self.current_expression = self.current_expression + '√('
-        self.cal_expression = self.cal_expression + ' math.sqrt( '
+        self.current_expression.append('√(')
+        self.cal_expression.append('math.sqrt(')
         self.update_current_label()
 
     def click_inverse(self):
-        self.current_expression = self.current_expression + '⅟('
-        self.cal_expression = self.cal_expression + ' 1/( '
+        self.current_expression.append('⅟(')
+        self.cal_expression.append('1/(')
         self.update_current_label()
         
         
