@@ -4,7 +4,6 @@ import tkinter.font as font
 from unicodedata import decimal
 import math
 import constBase
-from _ButtonFrame import ButtonFrame
 
 
 class Standard:
