@@ -7,10 +7,6 @@ import constBase
 from _ButtonFrame import ButtonFrame
 
 
-
-
-
-
 class Standard:
     def __init__(self, root):
         self.window = root
@@ -36,7 +32,6 @@ class Standard:
             self.buttons_frame.columnconfigure(x, weight=1)
         for x in range(0, 6):
             self.buttons_frame.rowconfigure(x, weight=1)
-
 
     def create_main_frame(self):
         frame = tk.Frame(self.window)
@@ -180,7 +175,7 @@ class Standard:
             pass
         try:
             self.total_expression = a.rstrip('0').rstrip(
-            '.') if '.' in a else a  # ???
+                '.') if '.' in a else a  # ???
         except:
             pass
 
@@ -192,7 +187,7 @@ class Standard:
 
     def negate(self):
         a = str(Decimal(''.join(self.current_expression)) * -1)
-        
+
         self.update_total_label()
 
     def click_sqr(self):
