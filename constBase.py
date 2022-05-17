@@ -1,0 +1,43 @@
+SCREENWIDTH = 320
+SCREENHEIGHT = 500
+DISPLAY_FRAME_HEIGHT = 200
+BUTTONS_FRAME_HEIGHT = 330
+LABEL_COLOR = "#000000"
+LIGHT_BLUE = "#99ccff"
+LIGHT_RED = "#FFA1A1"
+WHITE = "#FFFFFF"
+TOGGLE_COLOR = "#EEE4AB"
+OFF_WHITE = "#DBDBDB"
+SMALL_FONT_STYLE = ("Arial", 16)
+BUTTON_FONT_STYLE = ("Arial", 16)
+LARGE_FONT_STYLE = ("Arial", 40, "bold")
+FONT = ("Arial")
+
+COLOR1 = "#B1BCE6"
+DIGITS= {
+	7: (0, 0),
+    8: (0, 1),
+    9: (0, 2),
+	4: (1, 0),
+    5: (1, 1),
+	6: (1, 2),
+	1: (2, 0),
+	2: (2, 1),
+    3: (2, 2),
+    0: (3, 1),
+	'.': (3, 2),
+}
+
+
+
+
+class QUADRATIC_EQUATION(object): 
+	id = 2
+	text = 'Phương trình bậc 2: ax\u00b2 + bx + c = 0'
+
+class CUBIC_EQUATION(object):
+	id = 3
+	text = 'Phương trình bậc 3: ax\u00b3 + bx\u00b2 + cx + d =0'
+
+
+OPERATION = {"/": "÷", "*": "×", "+": "＋", "-": "-"}
