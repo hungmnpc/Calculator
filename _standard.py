@@ -63,12 +63,13 @@ class Standard:
 
     def create_display_labels(self):
         current_label = tk.Label(self.display_frame, text=''.join(self.total_expression),
-                                 font=constBase.SMALL_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, padx=24)
-        current_label.pack(expand=1, fill="both")
+                                 font=constBase.SMALL_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E)
+        current_label.pack(expand=1, fill="both", side=tk.TOP)
 
         total_label = tk.Label(self.display_frame, text=''.join(self.current_expression),
-                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, padx=24, bg="red", width=200)
-        total_label.pack(expand=1, fill="both")
+                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, height=10, bg="red", width=200)
+        total_label.pack(expand=1, fill="both", side=tk.BOTTOM)
+        total_label.pack_propagate(0)
 
         return current_label, total_label
 
@@ -141,10 +142,17 @@ class Standard:
     def update_total_label(self):
         x = len(self.total_expression)
 
+        if (x > 24):
+            self.total_expression = constBase.TEXT_ERROR
+            self.total_label.config(
+                text=self.total_expression, font=("Arial", 16, "bold"))
+            self.total_expression = ''
+            return
+        x = len(self.total_expression)
         fontSize = constBase.FONT_SIZE_TOTAL if x < 12 else int((
             12 / x) * constBase.FONT_SIZE_TOTAL)
 
-        print(fontSize)
+        fontSize = 17 if fontSize <= 16 else fontSize
         self.total_label.config(
             text=self.total_expression, font=("Arial", fontSize, "bold"))
 

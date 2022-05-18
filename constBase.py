@@ -12,8 +12,9 @@ SMALL_FONT_STYLE = ("Arial", 16)
 BUTTON_FONT_STYLE = ("Arial", 16)
 LARGE_FONT_STYLE = ("Arial", 30, "bold")
 FONT = ("Arial")
-MAXLENGTH = 12
+MAXLENGTH = 24
 FONT_SIZE_TOTAL = 30
+TEXT_ERROR = "Overlong.\nTry another calculation."
 
 COLOR1 = "#B1BCE6"
 DIGITS = {
