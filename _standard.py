@@ -67,7 +67,7 @@ class Standard:
         current_label.pack(expand=1, fill="both")
 
         total_label = tk.Label(self.display_frame, text=''.join(self.current_expression),
-                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, padx=24, bg="red")
+                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, padx=24, bg="red", width=200)
         total_label.pack(expand=1, fill="both")
 
         return current_label, total_label
@@ -139,11 +139,17 @@ class Standard:
         self.create_some_special_operation_buttons()
 
     def update_total_label(self):
-        self.total_label.config(text=self.total_expression)
+        x = len(self.total_expression)
+
+        fontSize = constBase.FONT_SIZE_TOTAL if x < 12 else int((
+            12 / x) * constBase.FONT_SIZE_TOTAL)
+
+        print(fontSize)
+        self.total_label.config(
+            text=self.total_expression, font=("Arial", fontSize, "bold"))
 
     def update_current_label(self):
         self.current_label.config(text=''.join(self.current_expression))
-        print(self.cal_expression)
 
     def add_value_label(self, value):
         if(self.state == 1):
@@ -176,9 +182,9 @@ class Standard:
 
     def equal_button_click(self):
         try:
-            a = eval(''.join(self.cal_expression))
-            x = len(str(int(a)))
-            a = str(round(a, constBase.MAXLENGTH - x))
+            a = str(eval(''.join(self.cal_expression)))
+            # x = len(str(int(a)))
+            # a = str(round(a, constBase.MAXLENGTH - x))
         except Exception as e:
             pass
         try:

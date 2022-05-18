@@ -13,6 +13,7 @@ BUTTON_FONT_STYLE = ("Arial", 16)
 LARGE_FONT_STYLE = ("Arial", 30, "bold")
 FONT = ("Arial")
 MAXLENGTH = 12
+FONT_SIZE_TOTAL = 30
 
 COLOR1 = "#B1BCE6"
 DIGITS = {

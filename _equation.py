@@ -27,8 +27,6 @@ class Equation(object):
         self.calExpression = []
         self.expressionLabel, self.total = self.createExpressionLabel()
 
-        print(self.display2.grid_size())
-
     def createMainFrame(self):
         frame = tk.Frame(self.window, bg="red")
         return frame
@@ -99,7 +97,6 @@ class Equation(object):
         button_sqrt.grid(row=1, column=2, sticky=tk.NSEW)
 
     def createOperationButton(self):
-        print(self.operation)
         i = 1
         for operation, text in self.operation.items():
             button = tk.Button(self.buttonFrame, text=text, bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR,
