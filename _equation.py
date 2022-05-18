@@ -151,7 +151,7 @@ class Equation(object):
 
     def configDisplay2(self):
         for i in range(0, 3):
-            self.display2.rowconfigure(i, weight=1, uniform='third')
+            self.display2.rowconfigure(i, weight=1)
 
         self.display2.columnconfigure(0, weight=1)
 
@@ -166,7 +166,7 @@ class Equation(object):
 
     def destroyDisplay2(self):
         for widgets in self.display2.winfo_children():
-            widget.destroy()
+            widgets.destroy()
 
     def configDisplay1(self):
 

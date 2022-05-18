@@ -1,4 +1,5 @@
 from decimal import Decimal
+from re import S
 import tkinter as tk
 import tkinter.font as font
 from unicodedata import decimal
@@ -142,11 +143,17 @@ class Standard:
 
     def update_current_label(self):
         self.current_label.config(text=''.join(self.current_expression))
+        print(self.cal_expression)
 
     def add_value_label(self, value):
         if(self.state == 1):
             self.current_expression.clear()
-            self.current_expression.append(self.total_expression)
+
+            self.cal_expression.clear()
+            x = list(str(self.total_expression))
+            for digit in x:
+                self.cal_expression.append(str(digit))
+                self.current_expression.append(str(digit))
             self.state = 0
         self.current_expression.append(str(value))
         self.cal_expression.append(str(value))
@@ -169,7 +176,9 @@ class Standard:
 
     def equal_button_click(self):
         try:
-            a = str(eval(''.join(self.cal_expression)))
+            a = eval(''.join(self.cal_expression))
+            x = len(str(int(a)))
+            a = str(round(a, constBase.MAXLENGTH - x))
         except Exception as e:
             pass
         try:
@@ -195,8 +204,19 @@ class Standard:
         self.update_current_label()
 
     def click_sqrt(self):
-        self.current_expression.append('√(')
-        self.cal_expression.append('math.sqrt(')
+        if(self.state == 1):
+            self.current_expression.clear()
+            self.current_expression.append('√(')
+            self.cal_expression.clear()
+            self.cal_expression.append('math.sqrt(')
+            x = list(str(self.total_expression))
+            for digit in x:
+                self.cal_expression.append(str(digit))
+                self.current_expression.append(str(digit))
+            self.state = 0
+        else:
+            self.current_expression.append('√(')
+            self.cal_expression.append('math.sqrt(')
         self.update_current_label()
 
     def click_inverse(self):
