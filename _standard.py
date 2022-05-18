@@ -213,8 +213,19 @@ class Standard:
         self.update_total_label()
 
     def click_sqr(self):
-        self.current_expression.append("^")
-        self.cal_expression.append("**")
+        if(self.state == 1):
+            self.current_expression.clear()
+            self.cal_expression.clear()
+            x = list(str(self.total_expression))
+            for digit in x:
+                self.cal_expression.append(str(digit))
+                self.current_expression.append(str(digit))
+            self.current_expression.append('^')
+            self.cal_expression.append('**')
+            self.state = 0
+        else:
+            self.current_expression.append('^')
+            self.cal_expression.append('**')
         self.update_current_label()
 
     def click_sqrt(self):

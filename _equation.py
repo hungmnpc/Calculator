@@ -1,3 +1,7 @@
+from ntpath import join
+from operator import le
+from re import S
+from select import select
 import tkinter as tk
 import constBase
 import math
@@ -26,6 +30,8 @@ class Equation(object):
         self.coefficientList = []
         self.calExpression = []
         self.expressionLabel, self.total = self.createExpressionLabel()
+        self.countOpen = 0
+        self.countClose = 0
 
     def createMainFrame(self):
         frame = tk.Frame(self.window, bg="red")
@@ -56,7 +62,7 @@ class Equation(object):
     def createDigitButton(self):
         for digit, grid_position in self.digits.items():
             button = tk.Button(self.buttonFrame, text=str(digit), bg=constBase.WHITE, fg=constBase.LABEL_COLOR,
-                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=digit: self.addValueLabel(x))
             button.grid(row=grid_position[0] + 2,
                         column=grid_position[1], sticky=tk.NSEW)
 
@@ -72,35 +78,62 @@ class Equation(object):
 
     def createEqualButton(self):
         buttonEq = tk.Button(self.buttonFrame, text="=", bg=constBase.LIGHT_BLUE, fg=constBase.LABEL_COLOR,
-                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickEqualButton)
         buttonEq.grid(row=5, column=3, sticky=tk.NSEW)
+
+    def clickEqualButton(self):
+        if (self.state["currentEquation"].id + 1 == len(self.coefficientList)):
+            print("Call solution")
+            return
+        x = self.countOpen - self.countClose
+        if (x != 0):
+            for i in range(0, x):
+                self.calExpression.append(")")
+                print(i)
+        try:
+            a = eval(''.join(self.calExpression))
+            self.calExpression.clear()
+            self.coefficientList.append(a)
+            self.countOpen = 0
+            self.countClose = 0
+        except:
+            pass
+        print(self.coefficientList)
 
     def createSomeSpecialOperationButtons(self):
         button_open_parenthese = tk.Button(
-            self.buttonFrame, text="(", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+            self.buttonFrame, text="(", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="(": self.addValueLabel(x))
         button_open_parenthese.grid(row=0, column=0, sticky=tk.NSEW)
 
         button_close_parenthese = tk.Button(self.buttonFrame, text=")", bg=constBase.OFF_WHITE,
-                                            fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
-        button_close_parenthese.grid(row=0, column=1, sticky=tk.NSEW)
+                                            fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=")": self.addValueLabel(x))
+        button_close_parenthese.grid(
+            row=0, column=1, sticky=tk.NSEW)
 
         button_inverse = tk.Button(
-            self.buttonFrame, text="⅟𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+            self.buttonFrame, text="⅟𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="1/(": self.addValueLabel(x))
         button_inverse.grid(row=1, column=0, sticky=tk.NSEW)
 
         button_sqr = tk.Button(self.buttonFrame, text="𝓍²",
-                               bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                               bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqr)
         button_sqr.grid(row=1, column=1, sticky=tk.NSEW)
 
         button_sqrt = tk.Button(
-            self.buttonFrame, text="√𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+            self.buttonFrame, text="√𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqrt)
         button_sqrt.grid(row=1, column=2, sticky=tk.NSEW)
+
+    def clickSqrt(self):
+        self.calExpression.append('math.sqrt(')
+        self.countOpen += 1
+
+    def clickSqr(self):
+        self.calExpression.append('**')
 
     def createOperationButton(self):
         i = 1
         for operation, text in self.operation.items():
             button = tk.Button(self.buttonFrame, text=text, bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR,
-                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=operation: self.addValueLabel(x))
             button.grid(row=i, column=3, sticky=tk.NSEW)
             i += 1
 
@@ -151,6 +184,17 @@ class Equation(object):
             self.display2.rowconfigure(i, weight=1)
 
         self.display2.columnconfigure(0, weight=1)
+
+    def addValueLabel(self, value):
+        if (value == "("):
+            self.countOpen += 1
+        if (value == ")"):
+            self.countClose += 1
+        if (value == "1/("):
+            self.countOpen += 1
+
+        self.calExpression.append(str(value))
+        print(self.calExpression)
 
     def createExpressionLabel(self):
         label1 = tk.Label(self.display2, text='A', font=constBase.SMALL_FONT_STYLE,
