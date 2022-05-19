@@ -1,10 +1,11 @@
 from ntpath import join
-from operator import le
+from operator import eq, le
 from re import S
 from select import select
 import tkinter as tk
 import constBase
 import math
+from equationSolve import equation_solver
 
 
 class Equation(object):
@@ -21,6 +22,7 @@ class Equation(object):
         self.state = {
             "currentEquation": constBase.QUADRATIC_EQUATION,
         }
+        self.coefficientLabelList = []
         self.equationLabel = self.createEquationLabel()
         self.display1 = self.createDisplay1()
         self.display2 = self.createDisplay2()
@@ -32,6 +34,7 @@ class Equation(object):
         self.expressionLabel, self.total = self.createExpressionLabel()
         self.countOpen = 0
         self.countClose = 0
+        self.currentExpression = []
 
     def createMainFrame(self):
         frame = tk.Frame(self.window, bg="red")
@@ -68,7 +71,7 @@ class Equation(object):
 
     def createClearButton(self):
         buttonClear = tk.Button(self.buttonFrame, text='C', bg=constBase.LIGHT_RED, fg=constBase.LABEL_COLOR,
-                                borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                                borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clearAll)
         buttonClear.grid(row=0, column=2, sticky=tk.NSEW)
 
     def createBackSpaceButton(self):
@@ -83,22 +86,22 @@ class Equation(object):
 
     def clickEqualButton(self):
         if (self.state["currentEquation"].id + 1 == len(self.coefficientList)):
-            print("Call solution")
+            print(equation_solver(self.coefficientList))
             return
         x = self.countOpen - self.countClose
         if (x != 0):
             for i in range(0, x):
                 self.calExpression.append(")")
-                print(i)
         try:
             a = eval(''.join(self.calExpression))
             self.calExpression.clear()
             self.coefficientList.append(a)
             self.countOpen = 0
             self.countClose = 0
+            self.currentExpression.clear()
         except:
             pass
-        print(self.coefficientList)
+        self.updateScreen()
 
     def createSomeSpecialOperationButtons(self):
         button_open_parenthese = tk.Button(
@@ -149,10 +152,19 @@ class Equation(object):
         frame.pack(expand=True, fill="both", side=tk.TOP)
         return frame
 
+    def clearAll(self):
+        self.currentExpression.clear()
+        self.coefficientList.clear()
+        self.coefficientLabelList.clear()
+        self.countOpen = 0
+        self.countClose = 0
+        self.calExpression.clear
+
     def toggleEquation(self):
         self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION
+        self.clearAll()
         self.configDisplay1()
-        self.equationLabelUpdate()
+        self.updateScreen()
 
     def createEquationLabel(self):
         label = tk.Label(
@@ -194,16 +206,30 @@ class Equation(object):
             self.countOpen += 1
 
         self.calExpression.append(str(value))
-        print(self.calExpression)
+        self.currentExpression.append(str(value))
+        self.updateScreen()
 
     def createExpressionLabel(self):
-        label1 = tk.Label(self.display2, text='A', font=constBase.SMALL_FONT_STYLE,
-                          fg=constBase.LABEL_COLOR, anchor=tk.E)
+        label1 = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE,  bg="black",
+                          fg=constBase.WHITE, anchor=tk.E)
         label1.grid(row=0, column=0)
-        label = tk.Label(self.display2, text='1', font=constBase.SMALL_FONT_STYLE,
-                         fg=constBase.LABEL_COLOR, anchor=tk.E)
+        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="black",
+                         fg=constBase.WHITE, anchor=tk.E)
         label.grid(row=1, column=0)
-        return label1, label
+        return label, label1
+
+    def updateExpressionLabel(self):
+        self.expressionLabel.config(text="".join(self.currentExpression))
+
+    def updateCoefficientLabel(self):
+        for i in range(0, len(self.coefficientList)):
+            self.coefficientLabelList[i].config(
+                text=str(self.coefficientList[i]))
+
+    def updateScreen(self):
+        self.updateExpressionLabel()
+        self.updateCoefficientLabel()
+        self.equationLabelUpdate()
 
     def destroyDisplay2(self):
         for widgets in self.display2.winfo_children():
@@ -217,6 +243,9 @@ class Equation(object):
         for i in range(0, 12):
             self.display1.columnconfigure(i, weight=1, uniform='third')
 
+        self.display1.rowconfigure(0, weight=1, uniform='third')
+        self.display1.rowconfigure(1, weight=1, uniform='third')
+
         self.controlDisplay1()
 
     def controlDisplay1(self):
@@ -225,9 +254,16 @@ class Equation(object):
 
         for i in range(0, n + 1):
             self.display1.columnconfigure(i, weight=1, uniform='third')
-            label = tk.Label(self.display1, text=data[i], bg=constBase.COLOR1)
+            label = tk.Label(
+                self.display1, text=data[i], bg=constBase.COLOR1, font=(15))
             label.grid(row=0, column=math.floor(i * (12 / (n + 1))),
                        columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
+            valueLabel = tk.Label(self.display1, text="",
+                                  bg=constBase.COLOR1, font=(12))
+            valueLabel.grid(row=1, column=math.floor(i * (12 / (n + 1))),
+                            columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
+            self.coefficientLabelList.append(valueLabel)
+        print(len(self.coefficientLabelList))
 
     def unpack(self):
         self.mainFrame.pack_forget()
