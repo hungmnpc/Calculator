@@ -82,6 +82,10 @@ class Equation(object):
 
     def clickBSButton(self):
         if self.currentExpression:
+            if (self.calExpression[-1] == ")"):
+                self.countClose -= 1
+            if (self.calExpression[-1] == "("):
+                self.countOpen -= 1
             self.currentExpression.pop()
             self.calExpression.pop()
         else:
@@ -103,7 +107,7 @@ class Equation(object):
             for i in range(0, x):
                 self.calExpression.append(")")
         try:
-            a = eval(''.join(self.calExpression))
+            a = round(eval(''.join(self.calExpression)), 3)
             self.calExpression.clear()
             self.coefficientList.append(a)
             self.countOpen = 0
@@ -137,10 +141,14 @@ class Equation(object):
 
     def clickSqrt(self):
         self.calExpression.append('math.sqrt(')
+        self.currentExpression.append('√(')
         self.countOpen += 1
+        self.updateScreen()
 
     def clickSqr(self):
+        self.currentExpression.append('^')
         self.calExpression.append('**')
+        self.updateScreen()
 
     def createOperationButton(self):
         i = 1
@@ -168,14 +176,13 @@ class Equation(object):
         self.coefficientLabelList.clear()
         self.countOpen = 0
         self.countClose = 0
-        self.calExpression.clear
+        self.calExpression.clear()
         self.configDisplay1()
         self.updateScreen()
 
     def toggleEquation(self):
         self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION
         self.clearAll()
-        print(self.currentExpression)
 
     def createEquationLabel(self):
         label = tk.Label(
@@ -234,8 +241,13 @@ class Equation(object):
 
     def updateCoefficientLabel(self):
         for t in range(0, len(self.coefficientList)):
+            x = len(str(self.coefficientList[t]))
+            fontSize = constBase.COEFFICIENT_FONT_DEFAULT if x <= 6 else int(
+                (6 / x) * constBase.COEFFICIENT_FONT_DEFAULT)
+
+            fontSize = fontSize if fontSize >= 8 else 8
             self.coefficientLabelList[t].config(
-                text=str(self.coefficientList[t]))
+                text=str(self.coefficientList[t]), font=("Arial", fontSize))
 
         for i in range(len(self.coefficientList), len(self.coefficientLabelList)):
             self.coefficientLabelList[i].config(text='')
@@ -273,7 +285,7 @@ class Equation(object):
             label.grid(row=0, column=math.floor(i * (12 / (n + 1))),
                        columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
             valueLabel = tk.Label(self.display1, text="",
-                                  bg=constBase.COLOR1, font=(12))
+                                  bg=constBase.COLOR1)
             valueLabel.grid(row=1, column=math.floor(i * (12 / (n + 1))),
                             columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
             self.coefficientLabelList.append(valueLabel)

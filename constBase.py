@@ -15,6 +15,7 @@ FONT = ("Arial")
 MAXLENGTH = 24
 FONT_SIZE_TOTAL = 30
 TEXT_ERROR = "Overlong.\nTry another calculation."
+COEFFICIENT_FONT_DEFAULT = 12
 
 COLOR1 = "#B1BCE6"
 DIGITS = {

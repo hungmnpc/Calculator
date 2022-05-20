@@ -169,6 +169,7 @@ class Standard:
                 self.cal_expression.append(str(digit))
                 self.current_expression.append(str(digit))
             self.state = 0
+
         self.current_expression.append(str(value))
         self.cal_expression.append(str(value))
         self.update_current_label()
