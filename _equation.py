@@ -228,24 +228,33 @@ class Equation(object):
         self.updateScreen()
 
     def createExpressionLabel(self):
-        label1 = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE,  bg="black",
-                          fg=constBase.WHITE, anchor=tk.E)
-        label1.grid(row=0, column=0)
+        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE,  bg="black",
+                                   fg=constBase.WHITE, anchor=tk.E)
+        expressionLabel.grid(row=0, column=0)
         label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="black",
                          fg=constBase.WHITE, anchor=tk.E)
         label.grid(row=1, column=0)
-        return label, label1
+        return label, expressionLabel
 
     def updateExpressionLabel(self):
+        index = len(self.coefficientList)
+        data = ['a', 'b', 'c', 'd', 'e']
+        if (index <= self.state["currentEquation"].id):
+            self.total.config(text=str(data[index] + ' ='))
+        else:
+            self.total.config(text='')
         self.expressionLabel.config(text="".join(self.currentExpression))
 
     def updateCoefficientLabel(self):
         for t in range(0, len(self.coefficientList)):
             x = len(str(self.coefficientList[t]))
+            if (x > 10):
+                return
             fontSize = constBase.COEFFICIENT_FONT_DEFAULT if x <= 6 else int(
                 (6 / x) * constBase.COEFFICIENT_FONT_DEFAULT)
 
             fontSize = fontSize if fontSize >= 8 else 8
+
             self.coefficientLabelList[t].config(
                 text=str(self.coefficientList[t]), font=("Arial", fontSize))
 
@@ -266,7 +275,7 @@ class Equation(object):
         for widgets in self.display1.winfo_children():
             widgets.grid_forget()
 
-        for i in range(0, 12):
+        for i in range(0, 60):
             self.display1.columnconfigure(i, weight=1, uniform='third')
 
         self.display1.rowconfigure(0, weight=1, uniform='third')
@@ -277,17 +286,16 @@ class Equation(object):
     def controlDisplay1(self):
         data = ["a", "b", "c", "d", "e"]
         n = self.state["currentEquation"].id
-
         for i in range(0, n + 1):
             self.display1.columnconfigure(i, weight=1, uniform='third')
             label = tk.Label(
                 self.display1, text=data[i], bg=constBase.COLOR1, font=(15))
-            label.grid(row=0, column=math.floor(i * (12 / (n + 1))),
-                       columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
+            label.grid(row=0, column=math.floor(i * (60 / (n + 1))),
+                       columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
             valueLabel = tk.Label(self.display1, text="",
                                   bg=constBase.COLOR1)
-            valueLabel.grid(row=1, column=math.floor(i * (12 / (n + 1))),
-                            columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
+            valueLabel.grid(row=1, column=math.floor(i * (60 / (n + 1))),
+                            columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
             self.coefficientLabelList.append(valueLabel)
 
     def unpack(self):
