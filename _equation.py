@@ -3,6 +3,7 @@ from operator import eq, le
 from re import S
 from select import select
 import tkinter as tk
+from turtle import update
 import constBase
 import math
 from equationSolve import equation_solver
@@ -76,8 +77,17 @@ class Equation(object):
 
     def createBackSpaceButton(self):
         buttonBS = tk.Button(self.buttonFrame, text="⌫", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR,
-                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE)
+                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickBSButton)
         buttonBS.grid(row=0, column=3, sticky=tk.NSEW)
+
+    def clickBSButton(self):
+        if self.currentExpression:
+            self.currentExpression.pop()
+            self.calExpression.pop()
+        else:
+            self.coefficientList.pop()
+
+        self.updateScreen()
 
     def createEqualButton(self):
         buttonEq = tk.Button(self.buttonFrame, text="=", bg=constBase.LIGHT_BLUE, fg=constBase.LABEL_COLOR,
@@ -159,12 +169,13 @@ class Equation(object):
         self.countOpen = 0
         self.countClose = 0
         self.calExpression.clear
+        self.configDisplay1()
+        self.updateScreen()
 
     def toggleEquation(self):
         self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION
         self.clearAll()
-        self.configDisplay1()
-        self.updateScreen()
+        print(self.currentExpression)
 
     def createEquationLabel(self):
         label = tk.Label(
@@ -222,9 +233,12 @@ class Equation(object):
         self.expressionLabel.config(text="".join(self.currentExpression))
 
     def updateCoefficientLabel(self):
-        for i in range(0, len(self.coefficientList)):
-            self.coefficientLabelList[i].config(
-                text=str(self.coefficientList[i]))
+        for t in range(0, len(self.coefficientList)):
+            self.coefficientLabelList[t].config(
+                text=str(self.coefficientList[t]))
+
+        for i in range(len(self.coefficientList), len(self.coefficientLabelList)):
+            self.coefficientLabelList[i].config(text='')
 
     def updateScreen(self):
         self.updateExpressionLabel()
@@ -263,7 +277,6 @@ class Equation(object):
             valueLabel.grid(row=1, column=math.floor(i * (12 / (n + 1))),
                             columnspan=math.floor(12 / (n + 1)), sticky=tk.NSEW)
             self.coefficientLabelList.append(valueLabel)
-        print(len(self.coefficientLabelList))
 
     def unpack(self):
         self.mainFrame.pack_forget()
