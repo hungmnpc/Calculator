@@ -181,7 +181,7 @@ class Equation(object):
         self.updateScreen()
 
     def toggleEquation(self):
-        self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION
+        self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION if self.state["currentEquation"].id == 4 else constBase.QUARTIC_EQUATION
         self.clearAll()
 
     def createEquationLabel(self):
@@ -228,10 +228,10 @@ class Equation(object):
         self.updateScreen()
 
     def createExpressionLabel(self):
-        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE,  bg="black",
+        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE,  bg="gray",
                                    fg=constBase.WHITE, anchor=tk.E)
         expressionLabel.grid(row=0, column=0)
-        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="black",
+        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="gray",
                          fg=constBase.WHITE, anchor=tk.E)
         label.grid(row=1, column=0)
         return label, expressionLabel

@@ -40,7 +40,12 @@ class QUADRATIC_EQUATION(object):
 
 class CUBIC_EQUATION(object):
     id = 3
-    text = 'Phương trình bậc 3: ax\u00b3 + bx\u00b2 + cx + d =0'
+    text = 'Phương trình bậc 3: ax\u00b3 + bx\u00b2 + cx + d = 0'
+
+
+class QUARTIC_EQUATION(object):
+    id = 4
+    text = 'Phương trình bậc 4: ax\u2074 + bx\u00b3 + cx\u00b2 + dx + e = 0'
 
 
 OPERATION = {"/": "÷", "*": "×", "+": "＋", "-": "-"}
