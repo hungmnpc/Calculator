@@ -195,6 +195,10 @@ class Standard:
             # x = len(str(int(a)))
             # a = str(round(a, constBase.MAXLENGTH - x))
         except Exception as e:
+            if (("math" in str(e)) or ("zero" in str(e))):
+                self.total_expression = constBase.MATH_ERROR_TEXT
+            else:
+                self.total_expression = constBase.SYNTAX_ERROR_TEXT
             pass
         try:
             self.total_expression = a.rstrip('0').rstrip(
