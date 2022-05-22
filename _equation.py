@@ -197,7 +197,7 @@ class Equation(object):
 
     def createDisplayFrame(self):
         frame = tk.Frame(
-            self.mainFrame, height=constBase.DISPLAY_FRAME_HEIGHT, bg=constBase.COLOR1)
+            self.mainFrame, height=constBase.DISPLAY_FRAME_HEIGHT, bg=constBase.WHITE)
         frame.pack_propagate(0)
         frame.pack(expand=True, fill="both", side=tk.TOP)
         return frame
@@ -220,7 +220,7 @@ class Equation(object):
 
     def createEquationLabel(self):
         label = tk.Label(
-            self.displayFrame, text=self.state["currentEquation"].text, bg=constBase.COLOR1)
+            self.displayFrame, text=self.state["currentEquation"].text, bg=constBase.WHITE)
         label.pack(side=tk.TOP)
         return label
 
@@ -228,7 +228,7 @@ class Equation(object):
         self.equationLabel.config(text=self.state["currentEquation"].text)
 
     def createDisplay1(self):
-        frame = tk.Frame(self.displayFrame, bg="", height=50)
+        frame = tk.Frame(self.displayFrame, bg=constBase.WHITE, height=50)
 
         frame.pack(expand=True, fill="both", side=tk.TOP)
         frame.grid_propagate(0)
@@ -236,7 +236,8 @@ class Equation(object):
         return frame
 
     def createDisplay2(self):
-        frame = tk.Frame(self.displayFrame, bg="black", height=140)
+        frame = tk.Frame(self.displayFrame,
+                         bg=constBase.DiSPLAY_COLOR, height=140)
 
         frame.pack(expand=True, fill="both", side=tk.BOTTOM)
         frame.grid_propagate(0)
@@ -261,15 +262,15 @@ class Equation(object):
         self.updateScreen()
 
     def createExpressionLabel(self):
-        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE,  bg="gray",
-                                   fg=constBase.WHITE, anchor=tk.E)
+        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                                   fg=constBase.LABEL_COLOR, anchor=tk.E)
         expressionLabel.grid(row=0, column=0)
-        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="gray",
-                         fg=constBase.WHITE, anchor=tk.E)
+        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                         fg=constBase.LABEL_COLOR, anchor=tk.E)
         label.grid(row=1, column=0)
 
-        resultLabel = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="black",
-                               fg=constBase.WHITE, anchor=tk.E)
+        resultLabel = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                               fg=constBase.LABEL_COLOR, anchor=tk.E)
         resultLabel.grid(row=2, column=0)
         return label, expressionLabel, resultLabel
 
@@ -326,11 +327,11 @@ class Equation(object):
         for i in range(0, n + 1):
             self.display1.columnconfigure(i, weight=1, uniform='third')
             label = tk.Label(
-                self.display1, text=data[i], bg=constBase.COLOR1, font=(15))
+                self.display1, text=data[i], bg=constBase.WHITE, font=(15))
             label.grid(row=0, column=math.floor(i * (60 / (n + 1))),
                        columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
             valueLabel = tk.Label(self.display1, text="",
-                                  bg=constBase.COLOR1)
+                                  bg=constBase.WHITE)
             valueLabel.grid(row=1, column=math.floor(i * (60 / (n + 1))),
                             columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
             self.coefficientLabelList.append(valueLabel)

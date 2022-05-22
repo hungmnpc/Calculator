@@ -67,7 +67,7 @@ class Standard:
         current_label.pack(expand=1, fill="both", side=tk.TOP)
 
         total_label = tk.Label(self.display_frame, text=''.join(self.current_expression),
-                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, height=10, bg="red", width=200)
+                               font=constBase.LARGE_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E, height=10, bg=constBase.DiSPLAY_COLOR, width=200)
         total_label.pack(expand=1, fill="both", side=tk.BOTTOM)
         total_label.pack_propagate(0)
 
@@ -95,7 +95,7 @@ class Standard:
         button['font'] = font.Font(size=17)
 
     def create_clear_buttons(self):
-        button_clear_all = tk.Button(self.buttons_frame, text="C", bg=constBase.OFF_WHITE,
+        button_clear_all = tk.Button(self.buttons_frame, text="C", bg=constBase.LIGHT_RED,
                                      fg=constBase.LABEL_COLOR, borderwidth=0, command=self.clear_all_display)
         button_clear_all.grid(row=0, column=2, sticky=tk.NSEW)
         button_clear_all['font'] = font.Font(size=17)
