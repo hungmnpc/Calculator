@@ -18,6 +18,7 @@ MEM_ERROR_TEXT = "Overlong.\nTry another calculation."
 MATH_ERROR_TEXT = "Math Error!"
 SYNTAX_ERROR_TEXT = "Syntax Error!"
 COEFFICIENT_FONT_DEFAULT = 12
+EQUATION_HAS_NO_SOLUTION = "the equation has no solution"
 
 COLOR1 = "#B1BCE6"
 DIGITS = {
@@ -33,6 +34,11 @@ DIGITS = {
     0: (3, 1),
     '.': (3, 2),
 }
+
+
+class SIMPLE_EQUATION(object):
+    id = 1
+    text = 'Phương trình bậc nhất: ax + b = 0'
 
 
 class QUADRATIC_EQUATION(object):

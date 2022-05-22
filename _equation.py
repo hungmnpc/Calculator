@@ -21,7 +21,7 @@ class Equation(object):
         self.configButtonFrame()
         self.createButton()
         self.state = {
-            "currentEquation": constBase.QUADRATIC_EQUATION,
+            "currentEquation": constBase.SIMPLE_EQUATION,
         }
         self.coefficientLabelList = []
         self.equationLabel = self.createEquationLabel()
@@ -32,10 +32,11 @@ class Equation(object):
 
         self.coefficientList = []
         self.calExpression = []
-        self.expressionLabel, self.total = self.createExpressionLabel()
+        self.expressionLabel, self.total, self.resultLabe = self.createExpressionLabel()
         self.countOpen = 0
         self.countClose = 0
         self.currentExpression = []
+        self.result = ''
 
     def createMainFrame(self):
         frame = tk.Frame(self.window, bg="red")
@@ -81,15 +82,24 @@ class Equation(object):
         buttonBS.grid(row=0, column=3, sticky=tk.NSEW)
 
     def clickBSButton(self):
-        if self.currentExpression:
-            if (self.calExpression[-1] == ")"):
-                self.countClose -= 1
-            if (self.calExpression[-1] == "("):
-                self.countOpen -= 1
-            self.currentExpression.pop()
-            self.calExpression.pop()
+        if self.result:
+            self.result = ''
         else:
-            self.coefficientList.pop()
+            if self.currentExpression:
+                if (self.calExpression[-1] == ")"):
+                    self.countClose -= 1
+                if (self.calExpression[-1] == "("):
+                    self.countOpen -= 1
+                try:
+                    self.currentExpression.pop()
+                    self.calExpression.pop()
+                except:
+                    pass
+            else:
+                try:
+                    self.coefficientList.pop()
+                except:
+                    pass
 
         self.updateScreen()
 
@@ -98,9 +108,31 @@ class Equation(object):
                              borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickEqualButton)
         buttonEq.grid(row=5, column=3, sticky=tk.NSEW)
 
+    def configResult(self, list):
+        if len(list):
+            self.result = 'X = { '
+
+            for value in list:
+                try:
+                    a = float(value.as_string())
+                    value = a.rstrip('0').rstrip(
+                        '.') if '.' in a else a
+                    value = str(round(value, 3))
+                except:
+                    value = str(value)
+                    if(value[-1] == '?'):
+                        value = str(round(float(value[:-1]), 3))
+
+                self.result += value + ', '
+            self.result = self.result[:-1][:-1] + '}'
+
+        else:
+            self.result = constBase.EQUATION_HAS_NO_SOLUTION
+        self.updateScreen()
+
     def clickEqualButton(self):
         if (self.state["currentEquation"].id + 1 == len(self.coefficientList)):
-            print(equation_solver(self.coefficientList))
+            self.configResult(equation_solver(self.coefficientList))
             return
         x = self.countOpen - self.countClose
         if (x != 0):
@@ -174,6 +206,7 @@ class Equation(object):
         self.currentExpression.clear()
         self.coefficientList.clear()
         self.coefficientLabelList.clear()
+        self.result = ''
         self.countOpen = 0
         self.countClose = 0
         self.calExpression.clear()
@@ -181,7 +214,8 @@ class Equation(object):
         self.updateScreen()
 
     def toggleEquation(self):
-        self.state["currentEquation"] = constBase.CUBIC_EQUATION if self.state["currentEquation"].id == 2 else constBase.QUADRATIC_EQUATION if self.state["currentEquation"].id == 4 else constBase.QUARTIC_EQUATION
+        self.state["currentEquation"] = constBase.QUADRATIC_EQUATION if self.state["currentEquation"].id == 1 else constBase.CUBIC_EQUATION if self.state[
+            "currentEquation"].id == 2 else constBase.QUARTIC_EQUATION if self.state["currentEquation"].id == 3 else constBase.SIMPLE_EQUATION
         self.clearAll()
 
     def createEquationLabel(self):
@@ -212,7 +246,6 @@ class Equation(object):
     def configDisplay2(self):
         for i in range(0, 3):
             self.display2.rowconfigure(i, weight=1)
-
         self.display2.columnconfigure(0, weight=1)
 
     def addValueLabel(self, value):
@@ -234,7 +267,11 @@ class Equation(object):
         label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="gray",
                          fg=constBase.WHITE, anchor=tk.E)
         label.grid(row=1, column=0)
-        return label, expressionLabel
+
+        resultLabel = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg="black",
+                               fg=constBase.WHITE, anchor=tk.E)
+        resultLabel.grid(row=2, column=0)
+        return label, expressionLabel, resultLabel
 
     def updateExpressionLabel(self):
         index = len(self.coefficientList)
@@ -265,10 +302,10 @@ class Equation(object):
         self.updateExpressionLabel()
         self.updateCoefficientLabel()
         self.equationLabelUpdate()
+        self.updateResultLabel()
 
-    def destroyDisplay2(self):
-        for widgets in self.display2.winfo_children():
-            widgets.destroy()
+    def updateResultLabel(self):
+        self.resultLabe.config(text=self.result)
 
     def configDisplay1(self):
 
