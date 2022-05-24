@@ -86,9 +86,10 @@ class Equation(object):
             self.result = ''
         else:
             if self.currentExpression:
-                if (self.calExpression[-1] == ")"):
+                if (")" in self.calExpression[-1]):
                     self.countClose -= 1
-                if (self.calExpression[-1] == "("):
+                if ("(" in self.calExpression[-1]):
+
                     self.countOpen -= 1
                 try:
                     self.currentExpression.pop()
@@ -138,6 +139,9 @@ class Equation(object):
         if (x != 0):
             for i in range(0, x):
                 self.calExpression.append(")")
+                self.currentExpression.append(")")
+                self.countClose += 1
+
         try:
             a = round(eval(''.join(self.calExpression)), 3)
             self.calExpression.clear()
@@ -300,6 +304,7 @@ class Equation(object):
             self.coefficientLabelList[i].config(text='')
 
     def updateScreen(self):
+
         self.updateExpressionLabel()
         self.updateCoefficientLabel()
         self.equationLabelUpdate()

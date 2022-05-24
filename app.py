@@ -11,7 +11,7 @@ class App:
         self.configWindow()
         self.frameStandard = Standard(self.window)
         self.frameEquation = Equation(self.window)
-        self.frameEquation.pack()
+        self.frameStandard.pack()
         self.createMenu()
 
     def configWindow(self):
