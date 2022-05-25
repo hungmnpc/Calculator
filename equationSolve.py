@@ -2,7 +2,7 @@ from z3 import *
 
 
 # giai phuong trinh bac 1,2,3,4
-def equation_solver(args_list):
+def equationSolver(args_list):
     x = Real('x')
     s = Solver()
     result = []
@@ -31,15 +31,3 @@ def equation_solver(args_list):
         res = s.check()
     return result
 
-
-# xu ly ket qua thu duoc tu ham equation_solver
-def result_parser(a):
-    number_of_result = len(a)
-    if (number_of_result == 0):
-        print("The equation has no solution")
-        return
-
-    for i in range(1, number_of_result + 1):
-        line = "x{pos} = {result}".format(pos=i, result=str(a[i - 1]))
-        print(line)
-    return

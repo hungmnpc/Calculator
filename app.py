@@ -1,17 +1,16 @@
-import tkinter as tk
+from tkinter import *
 from _standard import Standard
 from _equation import Equation
 import constBase
-from tkinter import *
 
 
 class App:
     def __init__(self):
-        self.window = tk.Tk()
+        self.window = Tk()
         self.configWindow()
         self.frameStandard = Standard(self.window)
         self.frameEquation = Equation(self.window)
-        self.frameEquation.pack()
+        self.frameStandard.pack()
         self.createMenu()
 
     def configWindow(self):
@@ -21,18 +20,18 @@ class App:
         self.window.title('Calculator')
 
     def createMenu(self):
-        menubar = tk.Menu(self.window)
+        menubar = Menu(self.window)
         self.window.config(menu=menubar)
         submenu = Menu(menubar)
         menubar.add_cascade(label="Menu", menu=submenu)
-        submenu.add_command(label="Standard", command=self.click1)
-        submenu.add_command(label="Equation", command=self.click2)
+        submenu.add_command(label="Standard", command=self.clickStandard)
+        submenu.add_command(label="Equation", command=self.clickEquation)
 
-    def click1(self):
+    def clickStandard(self):
         self.frameEquation.unpack()
         self.frameStandard.pack()
 
-    def click2(self):
+    def clickEquation(self):
         self.frameStandard.unpack()
         self.frameEquation.pack()
 

@@ -6,7 +6,7 @@ import tkinter as tk
 from turtle import update
 import constBase
 import math
-from equationSolve import equation_solver
+from equationSolve import equationSolver
 
 
 class Equation(object):
@@ -29,7 +29,6 @@ class Equation(object):
         self.display2 = self.createDisplay2()
         self.configDisplay1()
         self.configDisplay2()
-
         self.coefficientList = []
         self.calExpression = []
         self.expressionLabel, self.total, self.resultLabe = self.createExpressionLabel()
@@ -114,10 +113,11 @@ class Equation(object):
 
             for value in list:
                 try:
-                    a = float(value.as_string())
-                    value = a.rstrip('0').rstrip(
-                        '.') if '.' in a else a
-                    value = str(round(value, 3))
+                    a = value.as_string()
+                    if '.' in a:
+                        value = a.rstrip('0').rstrip( '.') 
+                    else:
+                        value = str(round(float(value), 3))
                 except:
                     value = str(value)
                     if(value[-1] == '?'):
@@ -132,7 +132,7 @@ class Equation(object):
 
     def clickEqualButton(self):
         if (self.state["currentEquation"].id + 1 == len(self.coefficientList)):
-            self.configResult(equation_solver(self.coefficientList))
+            self.configResult(equationSolver(self.coefficientList))
             return
         x = self.countOpen - self.countClose
         if (x != 0):
