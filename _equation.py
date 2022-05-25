@@ -1,9 +1,4 @@
-from ntpath import join
-from operator import eq, le
-from re import S
-from select import select
 import tkinter as tk
-from turtle import update
 import constBase
 import math
 from equationSolve import equationSolver
@@ -114,18 +109,16 @@ class Equation(object):
 
             for value in list:
                 try:
-                    a = value.as_string()
-                    if '.' in a:
-                        value = a.rstrip('0').rstrip( '.') 
-                    else:
-                        value = str(round(float(value), 3))
+                    print(value)
+                    value = str(round(float(value), 3))
+                    if '.' in value:
+                        value = value.rstrip('0').rstrip( '.') 
                 except:
-                    value = str(value)
                     if(value[-1] == '?'):
                         value = str(round(float(value[:-1]), 3))
 
                 self.result += value + ', '
-            self.result = self.result[:-1][:-1] + '}'
+            self.result = self.result[:-1][:-1] + ' }'
 
         else:
             self.result = constBase.EQUATION_HAS_NO_SOLUTION

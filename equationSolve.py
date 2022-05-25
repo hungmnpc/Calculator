@@ -23,7 +23,10 @@ def equationSolver(args_list):
     res = s.check()
     while (res == sat):
         m = s.model()
-        result.append(m[x])
+        if (str(m[x]) == "None"):
+            result.append("Multiple solutions")
+        else:
+            result.append(str(m[x]))
         block = []
         for var in m:
             block.append(var() != m[var])
