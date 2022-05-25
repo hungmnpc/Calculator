@@ -32,6 +32,8 @@ class Equation(object):
         self.currentExpression = []
         self.result = ''
 
+    #-------------------------Create windows and buttons----------------------------#
+
     def createMainFrame(self):
         frame = tk.Frame(self.window, bg="red")
         return frame
@@ -52,11 +54,6 @@ class Equation(object):
         self.createOperationButton()
         self.createSomeSpecialOperationButtons()
 
-    def configButtonFrame(self):
-        for x in range(0, 4):
-            self.buttonFrame.columnconfigure(x, weight=1, uniform='third')
-        for x in range(0, 6):
-            self.buttonFrame.rowconfigure(x, weight=1, uniform='third')
 
     def createDigitButton(self):
         for digit, grid_position in self.digits.items():
@@ -75,6 +72,159 @@ class Equation(object):
                              borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickBSButton)
         buttonBS.grid(row=0, column=3, sticky=tk.NSEW)
 
+
+    def createEqualButton(self):
+        buttonEq = tk.Button(self.buttonFrame, text="=", bg=constBase.LIGHT_BLUE, fg=constBase.LABEL_COLOR,
+                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickEqualButton)
+        buttonEq.grid(row=5, column=3, sticky=tk.NSEW)
+
+
+    def createSomeSpecialOperationButtons(self):
+        button_open_parenthese = tk.Button(
+            self.buttonFrame, text="(", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="(": self.addValueLabel(x))
+        button_open_parenthese.grid(row=0, column=0, sticky=tk.NSEW)
+
+        button_close_parenthese = tk.Button(self.buttonFrame, text=")", bg=constBase.OFF_WHITE,
+                                            fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=")": self.addValueLabel(x))
+        button_close_parenthese.grid(
+            row=0, column=1, sticky=tk.NSEW)
+
+        button_inverse = tk.Button(
+            self.buttonFrame, text="⅟𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="1/(": self.addValueLabel(x))
+        button_inverse.grid(row=1, column=0, sticky=tk.NSEW)
+
+        button_sqr = tk.Button(self.buttonFrame, text="𝓍²",
+                               bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqr)
+        button_sqr.grid(row=1, column=1, sticky=tk.NSEW)
+
+        button_sqrt = tk.Button(
+            self.buttonFrame, text="√𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqrt)
+        button_sqrt.grid(row=1, column=2, sticky=tk.NSEW)
+
+    def createExpressionLabel(self):
+        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                                   fg=constBase.LABEL_COLOR, anchor=tk.E)
+        expressionLabel.grid(row=0, column=0)
+        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                         fg=constBase.LABEL_COLOR, anchor=tk.E)
+        label.grid(row=1, column=0)
+
+        resultLabel = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
+                               fg=constBase.LABEL_COLOR, anchor=tk.E)
+        resultLabel.grid(row=2, column=0)
+        return label, expressionLabel, resultLabel
+    
+
+    def createOperationButton(self):
+        i = 1
+        for operation, text in self.operation.items():
+            button = tk.Button(self.buttonFrame, text=text, bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR,
+                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=operation: self.addValueLabel(x))
+            button.grid(row=i, column=3, sticky=tk.NSEW)
+            i += 1
+
+    def createEquationToggle(self):
+        buttonToggle = tk.Button(self.buttonFrame, text="Tg", bg=constBase.TOGGLE_COLOR, fg=constBase.LABEL_COLOR,
+                                 borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.toggleEquation)
+        buttonToggle.grid(row=5, column=0, sticky=tk.NSEW)
+
+    def createDisplayFrame(self):
+        frame = tk.Frame(
+            self.mainFrame, height=constBase.DISPLAY_FRAME_HEIGHT, bg=constBase.WHITE)
+        frame.pack_propagate(0)
+        frame.pack(expand=True, fill="both", side=tk.TOP)
+        return frame
+
+    def createEquationLabel(self):
+        label = tk.Label(
+            self.displayFrame, text=self.state["currentEquation"].text, bg=constBase.WHITE)
+        label.pack(side=tk.TOP)
+        return label
+
+    def createDisplay1(self):
+        frame = tk.Frame(self.displayFrame, bg=constBase.WHITE, height=50)
+
+        frame.pack(expand=True, fill="both", side=tk.TOP)
+        frame.grid_propagate(0)
+
+        return frame
+
+    def configDisplay1(self):
+
+        for widgets in self.display1.winfo_children():
+            widgets.grid_forget()
+
+        for i in range(0, 60):
+            self.display1.columnconfigure(i, weight=1, uniform='third')
+
+        self.display1.rowconfigure(0, weight=1, uniform='third')
+        self.display1.rowconfigure(1, weight=1, uniform='third')
+
+        self.controlDisplay1()
+
+    def controlDisplay1(self):
+        data = ["a", "b", "c", "d", "e"]
+        n = self.state["currentEquation"].id
+        for i in range(0, n + 1):
+            self.display1.columnconfigure(i, weight=1, uniform='third')
+            label = tk.Label(
+                self.display1, text=data[i], bg=constBase.WHITE, font=(15))
+            label.grid(row=0, column=math.floor(i * (60 / (n + 1))),
+                       columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
+            valueLabel = tk.Label(self.display1, text="",
+                                  bg=constBase.WHITE)
+            valueLabel.grid(row=1, column=math.floor(i * (60 / (n + 1))),
+                            columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
+            self.coefficientLabelList.append(valueLabel)
+
+    def createDisplay2(self):
+        frame = tk.Frame(self.displayFrame,
+                         bg=constBase.DiSPLAY_COLOR, height=140)
+
+        frame.pack(expand=True, fill="both", side=tk.BOTTOM)
+        frame.grid_propagate(0)
+
+        return frame
+
+    def configDisplay2(self):
+        for i in range(0, 3):
+            self.display2.rowconfigure(i, weight=1)
+        self.display2.columnconfigure(0, weight=1)
+    
+    
+    
+    def configButtonFrame(self):
+        for x in range(0, 4):
+            self.buttonFrame.columnconfigure(x, weight=1, uniform='third')
+        for x in range(0, 6):
+            self.buttonFrame.rowconfigure(x, weight=1, uniform='third')
+    #-----------------------------------------------------------------------------#
+
+
+    #parse result
+    def configResult(self, list):
+        if len(list):
+            self.result = 'X = { '
+
+            for value in list:
+                try:
+                    value = str(round(float(value), 3))
+                    if '.' in value:
+                        value = value.rstrip('0').rstrip( '.') 
+                except:
+                    if(value[-1] == '?'):
+                        value = str(round(float(value[:-1]), 3))
+
+                self.result += value + ', '
+            self.result = self.result[:-1][:-1] + ' }'
+
+        else:
+            self.result = constBase.EQUATION_HAS_NO_SOLUTION
+        self.updateScreen()
+
+
+
+    #-------------------------handle interation-------------------------------------#
     def clickBSButton(self):
         if self.result:
             self.result = ''
@@ -96,31 +246,6 @@ class Equation(object):
                 except:
                     pass
 
-        self.updateScreen()
-
-    def createEqualButton(self):
-        buttonEq = tk.Button(self.buttonFrame, text="=", bg=constBase.LIGHT_BLUE, fg=constBase.LABEL_COLOR,
-                             borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickEqualButton)
-        buttonEq.grid(row=5, column=3, sticky=tk.NSEW)
-
-    def configResult(self, list):
-        if len(list):
-            self.result = 'X = { '
-
-            for value in list:
-                try:
-                    value = str(round(float(value), 3))
-                    if '.' in value:
-                        value = value.rstrip('0').rstrip('.')
-                except:
-                    if(value[-1] == '?'):
-                        value = str(round(float(value[:-1]), 3))
-
-                self.result += value + ', '
-            self.result = self.result[:-1][:-1] + ' }'
-
-        else:
-            self.result = constBase.EQUATION_HAS_NO_SOLUTION
         self.updateScreen()
 
     def clickEqualButton(self):
@@ -145,28 +270,6 @@ class Equation(object):
             pass
         self.updateScreen()
 
-    def createSomeSpecialOperationButtons(self):
-        button_open_parenthese = tk.Button(
-            self.buttonFrame, text="(", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="(": self.addValueLabel(x))
-        button_open_parenthese.grid(row=0, column=0, sticky=tk.NSEW)
-
-        button_close_parenthese = tk.Button(self.buttonFrame, text=")", bg=constBase.OFF_WHITE,
-                                            fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=")": self.addValueLabel(x))
-        button_close_parenthese.grid(
-            row=0, column=1, sticky=tk.NSEW)
-
-        button_inverse = tk.Button(
-            self.buttonFrame, text="⅟𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x="1/(": self.addValueLabel(x))
-        button_inverse.grid(row=1, column=0, sticky=tk.NSEW)
-
-        button_sqr = tk.Button(self.buttonFrame, text="𝓍²",
-                               bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqr)
-        button_sqr.grid(row=1, column=1, sticky=tk.NSEW)
-
-        button_sqrt = tk.Button(
-            self.buttonFrame, text="√𝓍", bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR, borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.clickSqrt)
-        button_sqrt.grid(row=1, column=2, sticky=tk.NSEW)
-
     def clickSqrt(self):
         self.calExpression.append('math.sqrt(')
         self.currentExpression.append('√(')
@@ -177,26 +280,6 @@ class Equation(object):
         self.currentExpression.append('^')
         self.calExpression.append('**')
         self.updateScreen()
-
-    def createOperationButton(self):
-        i = 1
-        for operation, text in self.operation.items():
-            button = tk.Button(self.buttonFrame, text=text, bg=constBase.OFF_WHITE, fg=constBase.LABEL_COLOR,
-                               borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=lambda x=operation: self.addValueLabel(x))
-            button.grid(row=i, column=3, sticky=tk.NSEW)
-            i += 1
-
-    def createEquationToggle(self):
-        buttonToggle = tk.Button(self.buttonFrame, text="Tg", bg=constBase.TOGGLE_COLOR, fg=constBase.LABEL_COLOR,
-                                 borderwidth=0, font=constBase.BUTTON_FONT_STYLE, command=self.toggleEquation)
-        buttonToggle.grid(row=5, column=0, sticky=tk.NSEW)
-
-    def createDisplayFrame(self):
-        frame = tk.Frame(
-            self.mainFrame, height=constBase.DISPLAY_FRAME_HEIGHT, bg=constBase.WHITE)
-        frame.pack_propagate(0)
-        frame.pack(expand=True, fill="both", side=tk.TOP)
-        return frame
 
     def clearAll(self):
         self.currentExpression.clear()
@@ -214,37 +297,12 @@ class Equation(object):
             "currentEquation"].id == 2 else constBase.QUARTIC_EQUATION if self.state["currentEquation"].id == 3 else constBase.SIMPLE_EQUATION
         self.clearAll()
 
-    def createEquationLabel(self):
-        label = tk.Label(
-            self.displayFrame, text=self.state["currentEquation"].text, bg=constBase.WHITE)
-        label.pack(side=tk.TOP)
-        return label
-
+    
     def equationLabelUpdate(self):
         self.equationLabel.config(text=self.state["currentEquation"].text)
 
-    def createDisplay1(self):
-        frame = tk.Frame(self.displayFrame, bg=constBase.WHITE, height=50)
 
-        frame.pack(expand=True, fill="both", side=tk.TOP)
-        frame.grid_propagate(0)
-
-        return frame
-
-    def createDisplay2(self):
-        frame = tk.Frame(self.displayFrame,
-                         bg=constBase.DiSPLAY_COLOR, height=140)
-
-        frame.pack(expand=True, fill="both", side=tk.BOTTOM)
-        frame.grid_propagate(0)
-
-        return frame
-
-    def configDisplay2(self):
-        for i in range(0, 3):
-            self.display2.rowconfigure(i, weight=1)
-        self.display2.columnconfigure(0, weight=1)
-
+    #auto add curly braces
     def addValueLabel(self, value):
         if (value == "("):
             self.countOpen += 1
@@ -257,19 +315,7 @@ class Equation(object):
         self.currentExpression.append(str(value))
         self.updateScreen()
 
-    def createExpressionLabel(self):
-        expressionLabel = tk.Label(self.display2, text='a =', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
-                                   fg=constBase.LABEL_COLOR, anchor=tk.E)
-        expressionLabel.grid(row=0, column=0)
-        label = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
-                         fg=constBase.LABEL_COLOR, anchor=tk.E)
-        label.grid(row=1, column=0)
-
-        resultLabel = tk.Label(self.display2, text='', font=constBase.SMALL_FONT_STYLE, bg=constBase.DiSPLAY_COLOR,
-                               fg=constBase.LABEL_COLOR, anchor=tk.E)
-        resultLabel.grid(row=2, column=0)
-        return label, expressionLabel, resultLabel
-
+    #--------------------Update window------------------------#
     def updateExpressionLabel(self):
         index = len(self.coefficientList)
         data = ['a', 'b', 'c', 'd', 'e']
@@ -304,34 +350,6 @@ class Equation(object):
 
     def updateResultLabel(self):
         self.resultLabe.config(text=self.result)
-
-    def configDisplay1(self):
-
-        for widgets in self.display1.winfo_children():
-            widgets.grid_forget()
-
-        for i in range(0, 60):
-            self.display1.columnconfigure(i, weight=1, uniform='third')
-
-        self.display1.rowconfigure(0, weight=1, uniform='third')
-        self.display1.rowconfigure(1, weight=1, uniform='third')
-
-        self.controlDisplay1()
-
-    def controlDisplay1(self):
-        data = ["a", "b", "c", "d", "e"]
-        n = self.state["currentEquation"].id
-        for i in range(0, n + 1):
-            self.display1.columnconfigure(i, weight=1, uniform='third')
-            label = tk.Label(
-                self.display1, text=data[i], bg=constBase.WHITE, font=(15))
-            label.grid(row=0, column=math.floor(i * (60 / (n + 1))),
-                       columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
-            valueLabel = tk.Label(self.display1, text="",
-                                  bg=constBase.WHITE)
-            valueLabel.grid(row=1, column=math.floor(i * (60 / (n + 1))),
-                            columnspan=math.floor(60 / (n + 1)), sticky=tk.NSEW)
-            self.coefficientLabelList.append(valueLabel)
 
     def unpack(self):
         self.mainFrame.pack_forget()
