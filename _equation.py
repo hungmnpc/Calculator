@@ -109,10 +109,9 @@ class Equation(object):
 
             for value in list:
                 try:
-                    print(value)
                     value = str(round(float(value), 3))
                     if '.' in value:
-                        value = value.rstrip('0').rstrip( '.') 
+                        value = value.rstrip('0').rstrip('.')
                 except:
                     if(value[-1] == '?'):
                         value = str(round(float(value[:-1]), 3))

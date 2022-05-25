@@ -1,9 +1,5 @@
-from decimal import Decimal
-from re import S
 import tkinter as tk
 import tkinter.font as font
-from unicodedata import decimal
-import math
 import constBase
 
 
@@ -19,26 +15,19 @@ class Standard:
 
         self.display_frame = self.createDisplayFrame()
         self.current_label, self.total_label = self.createDisplayLabels()
-
         self.buttons_frame = self.createButtonsFrame()
         self.configButton()
         self.createDigitsButton()
         self.createOperationButtons()
         self.createSpecialButton()
+        self.answer = ''
         self.state = 0
 
-    def configButton(self):
-        for x in range(0, 4):
-            self.buttons_frame.columnconfigure(x, weight=1)
-        for x in range(0, 6):
-            self.buttons_frame.rowconfigure(x, weight=1)
+    # _________Create Frame Layout____________________________
 
     def createMainFrame(self):
         frame = tk.Frame(self.window)
         return frame
-
-    def getFrame(self):
-        return self.mainFrame
 
     def createDisplayFrame(self):
         frame = tk.Frame(self.mainFrame, height=constBase.DISPLAY_FRAME_HEIGHT)
@@ -52,15 +41,9 @@ class Standard:
         frame.pack(expand=True, fill="both")
         frame.grid_propagate(0)
         return frame
+    # __________________________________________________________
 
-    def createDigitsButton(self):
-        for digit, grid_value in self.digits.items():
-            button = tk.Button(self.buttons_frame, text=str(digit), bg=constBase.WHITE, fg=constBase.LABEL_COLOR,
-                               borderwidth=0, font=constBase.FONT, command=lambda x=digit: self.addValueLabel(x))
-            button.grid(row=grid_value[0]+2,
-                        column=grid_value[1], sticky=tk.NSEW)
-            button['font'] = font.Font(size=17)
-
+    # _____________Create Label__________________________________
     def createDisplayLabels(self):
         current_label = tk.Label(self.display_frame, text=''.join(self.total_expression),
                                  font=constBase.SMALL_FONT_STYLE, fg=constBase.LABEL_COLOR, anchor=tk.E)
@@ -72,6 +55,9 @@ class Standard:
         total_label.pack_propagate(0)
 
         return current_label, total_label
+    # ____________________________________________________________
+
+    # ___________________________Create Button__________________________________
 
     def createOperationButtons(self):
         i = 1
@@ -82,28 +68,11 @@ class Standard:
             button['font'] = font.Font(size=17)
             i += 1
 
-    def createNegateButton(self):
-        button = tk.Button(self.buttons_frame, text="±", bg=constBase.WHITE,
-                           fg=constBase.LABEL_COLOR, borderwidth=0, command=self.negate)
-        button.grid(row=5, column=0, sticky=tk.NSEW)
-        button['font'] = font.Font(size=17)
-
     def createEqualButton(self):
         button = tk.Button(self.buttons_frame, text="=", bg=constBase.LIGHT_BLUE,
                            fg=constBase.LABEL_COLOR, borderwidth=0, command=self.equalButtonClick)
         button.grid(row=5, column=3, sticky=tk.NSEW)
         button['font'] = font.Font(size=17)
-
-    def createClearButton(self):
-        button_clear_all = tk.Button(self.buttons_frame, text="C", bg=constBase.LIGHT_RED,
-                                     fg=constBase.LABEL_COLOR, borderwidth=0, command=self.clearAllDisplay)
-        button_clear_all.grid(row=0, column=2, sticky=tk.NSEW)
-        button_clear_all['font'] = font.Font(size=17)
-
-        button_backspace = tk.Button(self.buttons_frame, text="⌫", bg=constBase.OFF_WHITE,
-                                     fg=constBase.LABEL_COLOR, borderwidth=0, command=lambda: self.backSpace())
-        button_backspace.grid(row=0, column=3, sticky=tk.NSEW)
-        button_backspace['font'] = font.Font(size=17)
 
     def createSomeSpecialOperationButton(self):
         button_open_parenthese = tk.Button(
@@ -133,11 +102,40 @@ class Standard:
         button_sqrt.grid(row=1, column=2, sticky=tk.NSEW)
         button_sqrt['font'] = font.Font(size=17)
 
+    def createClearButton(self):
+        button_clear_all = tk.Button(self.buttons_frame, text="C", bg=constBase.LIGHT_RED,
+                                     fg=constBase.LABEL_COLOR, borderwidth=0, command=self.clearAllDisplay)
+        button_clear_all.grid(row=0, column=2, sticky=tk.NSEW)
+        button_clear_all['font'] = font.Font(size=17)
+
+        button_backspace = tk.Button(self.buttons_frame, text="⌫", bg=constBase.OFF_WHITE,
+                                     fg=constBase.LABEL_COLOR, borderwidth=0, command=lambda: self.backSpace())
+        button_backspace.grid(row=0, column=3, sticky=tk.NSEW)
+        button_backspace['font'] = font.Font(size=17)
+
+    def createDigitsButton(self):
+        for digit, grid_value in self.digits.items():
+            button = tk.Button(self.buttons_frame, text=str(digit), bg=constBase.WHITE, fg=constBase.LABEL_COLOR,
+                               borderwidth=0, font=constBase.FONT, command=lambda x=digit: self.addValueLabel(x))
+            button.grid(row=grid_value[0]+2,
+                        column=grid_value[1], sticky=tk.NSEW)
+            button['font'] = font.Font(size=17)
+
+    def createAnsButton(self):
+        button = tk.Button(self.buttons_frame, text="Ans", bg=constBase.WHITE,
+                           fg=constBase.LABEL_COLOR, borderwidth=0, command=self.clickAnsBt)
+        button.grid(row=5, column=0, sticky=tk.NSEW)
+        button['font'] = font.Font(size=17)
+
     def createSpecialButton(self):
         self.createEqualButton()
-        self.createNegateButton()
+        self.createAnsButton()
         self.createClearButton()
         self.createSomeSpecialOperationButton()
+
+    # _____________________________________________________________________
+
+    # _________________________Update Screen_______________________________
 
     def updateTotalLabel(self):
         x = len(self.total_expression)
@@ -158,6 +156,16 @@ class Standard:
 
     def updateCurrentLabel(self):
         self.current_label.config(text=''.join(self.current_expression))
+
+    # _____________________________________________________________________
+
+    def configButton(self):
+        for x in range(0, 4):
+            self.buttons_frame.columnconfigure(x, weight=1, uniform='third')
+        for x in range(0, 6):
+            self.buttons_frame.rowconfigure(x, weight=1, uniform='third')
+
+    # _______________________Handle click button_____________________________
 
     def addValueLabel(self, value):
         if(self.state == 1):
@@ -195,8 +203,14 @@ class Standard:
         except Exception as e:
             if (("math" in str(e)) or ("zero" in str(e))):
                 self.total_expression = constBase.MATH_ERROR_TEXT
+                self.state = 0
+                self.updateTotalLabel()
+                return
             else:
                 self.total_expression = constBase.SYNTAX_ERROR_TEXT
+                self.state = 0
+                self.updateTotalLabel()
+                return
             pass
         try:
             self.total_expression = a.rstrip('0').rstrip(
@@ -206,15 +220,17 @@ class Standard:
 
         if (self.total_expression == ''):
             self.total_expression = '0'
+        self.answer = self.total_expression
         self.updateTotalLabel()
 
         self.state = 1
 
-    def negate(self):
-        a = str(Decimal(''.join(self.current_expression)) * -1)
-        ##??????
-
-        self.updateTotalLabel()
+    def clickAnsBt(self):
+        x = list(self.answer)
+        for value in x:
+            self.cal_expression.append(str(value))
+            self.current_expression.append(str(value))
+        self.updateCurrentLabel()
 
     def clickSqr(self):
         if(self.state == 1):
@@ -252,6 +268,8 @@ class Standard:
         self.current_expression.append('1/(')
         self.cal_expression.append('1/(')
         self.updateCurrentLabel()
+
+    # _________________________________________________________
 
     def pack(self):
         self.mainFrame.pack(expand=True, fill="both")
