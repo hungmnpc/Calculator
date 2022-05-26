@@ -1,4 +1,5 @@
 from z3 import *
+        -   Hard to allow sharing of procedures between processes
 
 
 # giai phuong trinh bac 1,2,3,4
@@ -24,7 +25,7 @@ def equationSolver(args_list):
     while (res == sat):
         m = s.model()
         if (str(m[x]) == "None"):
-            result.append("Multiple solutions")
+            result.append("Infinite solution")
         else:
             result.append(str(m[x]))
         block = []
