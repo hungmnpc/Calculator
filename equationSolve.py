@@ -1,5 +1,4 @@
 from z3 import *
-        -   Hard to allow sharing of procedures between processes
 
 
 # giai phuong trinh bac 1,2,3,4
