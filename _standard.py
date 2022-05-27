@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.font as font
 import constBase
+import math
 
 
 class Standard:
