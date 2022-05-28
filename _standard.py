@@ -197,6 +197,7 @@ class Standard:
         self.cal_expression.clear()
         self.updateTotalLabel()
         self.updateCurrentLabel()
+        self.state = 0
 
     def equalButtonClick(self):
         try:
