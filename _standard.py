@@ -267,8 +267,20 @@ class Standard:
         self.updateCurrentLabel()
 
     def clickInverse(self):
-        self.current_expression.append('1/(')
-        self.cal_expression.append('1/(')
+        if(self.state == 1):
+            self.current_expression.clear()
+            self.current_expression.append('1/(')
+            self.cal_expression.clear()
+            self.cal_expression.append('1/(')
+            x = list(str(self.total_expression))
+            for digit in x:
+                self.cal_expression.append(str(digit))
+                self.current_expression.append(str(digit))
+            self.state = 0
+        else:
+            self.current_expression.append('1/(')
+            self.cal_expression.append('1/(')
+
         self.updateCurrentLabel()
 
     # _________________________________________________________
